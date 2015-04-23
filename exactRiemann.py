@@ -12,13 +12,13 @@ def f(p4, p1, p5, rho1, rho5, gamma):
     gp1 = gamma + 1.
     g2 = 2. * gamma
 
-    fact = gm1 / g2 * (c5 / c1) * z / math.sqrt (1. + gp1 / g2 * z)
+    fact = gm1 / g2 * (c5 / c1) * z / math.sqrt(1. + gp1 / g2 * z)
     fact = (1. - fact) ** (g2 / gm1)
 
     return p1 * fact - p4
 
 
-if __name__ == '__main__':
+def solver():
     # ..define initial conditions
     # ..state at left of discontinuity
     rhol = 1.0
@@ -48,19 +48,19 @@ if __name__ == '__main__':
 
     # ..begin solution
     if pl > pr:
-         rho1 = rhol
-         p1   = pl
-         u1   = ul
-         rho5 = rhor
-         p5   = pr
-         u5   = ur
+        rho1 = rhol
+        p1 = pl
+        u1 = ul
+        rho5 = rhor
+        p5 = pr
+        u5 = ur
     else:
-         rho1 = rhor
-         p1   = pr
-         u1   = ur
-         rho5 = rhol
-         p5   = pl
-         u5   = ul
+        rho1 = rhor
+        p1 = pr
+        u1 = ur
+        rho5 = rhol
+        p5 = pl
+        u5 = ul
 
     # ..solve for post-shock pressure by secant method
     # ..initial guesses
@@ -69,11 +69,10 @@ if __name__ == '__main__':
     f0 = f(p40, p1, p5, rho1, rho5, gamma)
 
     # ..maximum number of iterations and maximum allowable relative error
-    itmax = 20
     eps = 1.e-5
 
     err = 1.
-    iter = 0
+    it = 0
     itermax = 20
     while err > eps:
         f1 = f(p41, p1, p5, rho1, rho5, gamma)
@@ -86,8 +85,8 @@ if __name__ == '__main__':
         p40 = p41
         p41 = p4
         f0 = f1
-        iter +=1
-        if iter > itermax:
+        it += 1
+        if it > itermax:
             print("no convergence!")
             sys.exit()
 
@@ -136,7 +135,7 @@ if __name__ == '__main__':
         print('Shock : x = {0}'.format(xsh))
 
 
-        dx = (xr - xl) / (npts - 1)
+        dx = (xr-xl)/(npts-1)
         x_arr = np.arange(xl, xr, dx)
         rho_arr = np.zeros(npts, dtype=float)
         p_arr = np.zeros(npts, dtype=float)
@@ -216,3 +215,7 @@ if __name__ == '__main__':
                 rho = rho1
                 p = p1
                 u = -u1
+
+if __name__ == '__main__':
+    solver()
+
