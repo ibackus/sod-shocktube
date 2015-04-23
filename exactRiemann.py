@@ -178,61 +178,46 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     return x_arr, p, rho, u
 
 
-def solver(left_state, right_state, geometry, t, gamma = 1.4, npts = 500):
+def solver(left_state, right_state, geometry, t, gamma=1.4, npts=500):
 
     (pl, rhol, ul) = left_state
     (pr, rhor, ur) = right_state
     (xl, xr, xi) = geometry
 
-    """
-    # ..define initial conditions
-    # ..state at left of discontinuity
-    rhol = 1.0
-    pl = 1.0
-    ul = 0.
-
-    # ..state at right of discontinuity
-    rhor = 0.125
-    pr = 0.1
-    ur = 0.
-
-    # .. equation of state
-    gamma = 1.4
-
-    # ..location of discontinuity at t = 0
-    xi = 0.5
-
-    # ..time at which solution is desired
-    t = 0.20
-
-    # ..number of points in solution
-    npts = 500
-
-    # ..spatial interval over which to compute solution
-    xl = 0.0
-    xr = 1.0
-    """
     # ..begin solution
     p1, rho1, u1, p3, rho3, u3, p4, rho4, u4, p5, rho5, u5, w = \
         calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
 
-    positions = calc_positions(pl, pr, p1, p3,
+    x_positions = calc_positions(pl, pr, p1, p3,
                                rho1, rho3,
                                u3, w, xi, t, gamma)
-    print(positions)
+    print(x_positions)
+
+    pos_decr = ('Head of Rarefaction', 'Foot of Rarefaction',
+                'Contact Discontinuity', 'Shock')
+    positions = dict(zip(pos_decr, x_positions))
+
+    for desc, values in positions.items():
+        print('{0:10} ==> {1}'.format(desc, values))
+
     regions = region_states(pl, pr, p1, p3, p4, p5,
                             rho1, rho3, rho4, rho5,
                             u1, u3, u4, u5)
 
-    for region, values in sorted(regions.items()):
-        print('{0:10} ==> {1}'.format(region, values))
+    #for region, values in sorted(regions.items()):
+    #    print('{0:10} ==> {1}'.format(region, values))
 
-    x, p, rho, u = create_arrays(pl, pr, xl, xr, positions,
+
+    x, p, rho, u = create_arrays(pl, pr, xl, xr, x_positions,
                                  (p1, rho1, u1), (p3, rho3, u3),
-                                 (p4, rho4, u4), (p5, rho5, u5),npts, gamma, t, xi)
-    #print(rho)
+                                 (p4, rho4, u4), (p5, rho5, u5), npts, gamma, t, xi)
+
+    val_names = ('x', 'p', 'rho', 'u')
+    val_dict = dict(zip(val_names, (x, p, rho, u)))
+
+    return positions, regions, val_dict
 
 if __name__ == '__main__':
     solver(left_state=(1, 1, 0), right_state=(0.1, 0.125, 0.),
-           geometry=(0, 1, 0.5), t=0.2)
+           geometry=(0., 1., 0.5), t=0.2)
 
