@@ -1,7 +1,8 @@
 import math
 import sys
 import numpy as np
-
+import scipy
+import scipy.optimize
 
 def f(p4, p1, p5, rho1, rho5, gamma):
     z = (p4 / p5 - 1.)
@@ -17,6 +18,36 @@ def f(p4, p1, p5, rho1, rho5, gamma):
 
     return p1 * fact - p4
 
+
+def solve_p4(p1, p5, rho1, rho5, gamma):
+    # ..solve for post-shock pressure by secant method
+    # ..initial guesses
+    p40 = p1
+    p41 = p5
+    f0 = f(p40, p1, p5, rho1, rho5, gamma)
+
+    # ..maximum number of iterations and maximum allowable relative error
+    eps = 1.e-5
+
+    err = 1.
+    it = 0
+    itermax = 20
+    while err > eps:
+        f1 = f(p41, p1, p5, rho1, rho5, gamma)
+        if math.fabs((f1-f0)/f1) < eps:
+            break
+        p4 = p41 - (p41 - p40) * f1 / (f1 - f0)
+        error = math.fabs(p4 - p41) / p41
+        if error < eps:
+            break
+        p40 = p41
+        p41 = p4
+        f0 = f1
+        it += 1
+        if it > itermax:
+            print("no convergence!")
+            sys.exit()
+    return p4
 
 def solver():
     # ..define initial conditions
@@ -62,6 +93,11 @@ def solver():
         p5 = pl
         u5 = ul
 
+    p4 = solve_p4(p1, p5, rho1, rho5, gamma)
+    p4_new = scipy.optimize.fsolve(f, p1, (p1, p5, rho1, rho5, gamma))[0]
+    print('p4 = {0} vs p4_new = {1}'.format(p4, p4_new))
+    p4 = p4_new
+    """
     # ..solve for post-shock pressure by secant method
     # ..initial guesses
     p40 = p1
@@ -89,7 +125,7 @@ def solver():
         if it > itermax:
             print("no convergence!")
             sys.exit()
-
+    """
     # c..compute post-shock density and velocity
     z = (p4 / p5 - 1.)
     c5 = math.sqrt(gamma * p5 / rho5)
