@@ -2,12 +2,12 @@
 
 ## Description
 The sod module solves the riemann problem for Sod test.
-The code logic is blatantly copied from [here](http://cococubed.asu.edu/code_pages/exact_riemann.shtml)
+The code logic is blatantly copied from [here](http://cococubed.asu.edu/code_pages/exact_riemann.shtml).
 ## Licence
 
 The MIT License (MIT)
 
-Copyright (c) [year] [fullname]
+Copyright (c) 2015 Jerko Škifić
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
