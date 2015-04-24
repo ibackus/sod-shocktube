@@ -3,7 +3,10 @@ import scipy
 import scipy.optimize
 
 
-def f(p4, p1, p5, rho1, rho5, gamma):
+def shock_tube_function(p4, p1, p5, rho1, rho5, gamma):
+    """
+    Shock tube equation
+    """
     z = (p4 / p5 - 1.)
     c1 = np.sqrt(gamma * p1 / rho1)
     c5 = np.sqrt(gamma * p5 / rho5)
@@ -42,7 +45,7 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
         u5 = ul
 
     # solve for post-shock pressure
-    p4 = scipy.optimize.fsolve(f, p1, (p1, p5, rho1, rho5, gamma))[0]
+    p4 = scipy.optimize.fsolve(shock_tube_function, p1, (p1, p5, rho1, rho5, gamma))[0]
 
     # compute post-shock density and velocity
     z = (p4 / p5 - 1.)
@@ -68,11 +71,14 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
     return (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w
 
 
-def calc_positions(pl, pr, p1, p3, rho1, rho3, u3, w, xi, t, gamma):
+def calc_positions(pl, pr, region1, region3, w, xi, t, gamma):
     """
-    :return: Head of Rarefaction: xhd,  Foot of Rarefaction: xft,
+    :return: tuple of positions in the following order ->
+            Head of Rarefaction: xhd,  Foot of Rarefaction: xft,
             Contact Discontinuity: xcd, Shock: xsh
     """
+    p1, rho1 = region1[:2]  # don't need velocity
+    p3, rho3, u3 = region3
     c1 = np.sqrt(gamma * p1 / rho1)
     c3 = np.sqrt(gamma * p3 / rho3)
     if pl > pr:
@@ -90,33 +96,34 @@ def calc_positions(pl, pr, p1, p3, rho1, rho3, u3, w, xi, t, gamma):
     return xhd, xft, xcd, xsh
 
 
-def region_states(pl, pr, p1, p3, p4, p5, rho1, rho3, rho4, rho5, u1, u3, u4, u5):
+def region_states(pl, pr, region1, region3, region4, region5):
     """
-    :return: dictionary (region no.: p, rho, u), except for rarefaction region, where the value is a string
+    :return: dictionary (region no.: p, rho, u), except for rarefaction region
+    where the value is a string, obviously
     """
     if pl > pr:
-        return {'Region 1': (p1, rho1, u1),
+        return {'Region 1': region1,
                 'Region 2': 'RAREFACTION',
-                'Region 3': (p3, rho3, u3),
-                'Region 4': (p4, rho4, u4),
-                'Region 5': (p5, rho5, u5)}
+                'Region 3': region3,
+                'Region 4': region4,
+                'Region 5': region5}
     else:
-        return {'Region 1': (p5, rho5, u5),
-                'Region 2': (p4, rho4, u4),
-                'Region 3': (p3, rho3, u3),
+        return {'Region 1': region5,
+                'Region 2': region4,
+                'Region 3': region3,
                 'Region 4': 'RAREFACTION',
-                'Region 5': (p1, rho1, u1)}
+                'Region 5': region1}
 
 
 def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npts, gamma, t, xi):
     """
     :return: tuple of x, p, rho and u values across the domain of interest
     """
-    (xhd, xft, xcd, xsh) = positions
-    (p1, rho1, u1) = state1
-    (p3, rho3, u3) = state3
-    (p4, rho4, u4) = state4
-    (p5, rho5, u5) = state5
+    xhd, xft, xcd, xsh = positions
+    p1, rho1, u1 = state1
+    p3, rho3, u3 = state3
+    p4, rho4, u4 = state4
+    p5, rho5, u5 = state5
     gm1 = gamma - 1.
     gp1 = gamma + 1.
 
@@ -205,27 +212,22 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
         exit()
 
     # calculate regions
-    (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w = \
+    region1, region3, region4, region5, w = \
         calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
 
-    regions = region_states(pl, pr, p1, p3, p4, p5,
-                            rho1, rho3, rho4, rho5,
-                            u1, u3, u4, u5)
+    regions = region_states(pl, pr, region1, region3, region4, region5)
 
     # calculate positions
-    x_positions = calc_positions(pl, pr, p1, p3,
-                                 rho1, rho3,
-                                 u3, w, xi, t, gamma)
+    x_positions = calc_positions(pl, pr, region1, region3, w, xi, t, gamma)
 
     pos_description = ('Head of Rarefaction', 'Foot of Rarefaction',
                        'Contact Discontinuity', 'Shock')
     positions = dict(zip(pos_description, x_positions))
 
-
-
+    # create arrays
     x, p, rho, u = create_arrays(pl, pr, xl, xr, x_positions,
-                                 (p1, rho1, u1), (p3, rho3, u3),
-                                 (p4, rho4, u4), (p5, rho5, u5), npts, gamma, t, xi)
+                                 region1, region3, region4, region5,
+                                 npts, gamma, t, xi)
 
     val_names = ('x', 'p', 'rho', 'u')
     val_dict = dict(zip(val_names, (x, p, rho, u)))
