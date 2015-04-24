@@ -178,24 +178,45 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     return x_arr, p, rho, u
 
 
-def solver(left_state, right_state, geometry, t, gamma=1.4, npts=500):
+def solve_sod(left_state, right_state, geometry, t, gamma=1.4, npts=500):
+    """
+    Solves the Sod problem (which is a riemann problem) of discontinuity across an interface.
+
+    :param left_state: tuple (pl, rhol, ul)
+    :param right_state: tuple (pr, rhor, ur)
+    :param geometry: tuple (xl, xr, xi): xl - left boundary, xr - right boundary, xi - initial discontinuity
+    :param t: time for which the states have to be calculated
+    :param gamma: ideal gas constant, default is air: 1.4
+    :param npts: number of points for array of pressure, density and velocity
+    :return: tuple of: dicts of positions,
+    constant pressure, density and velocity states in distinct regions,
+    arrays of pressure, density and velocity in domain bounded by xl, xr
+    """
 
     (pl, rhol, ul) = left_state
     (pr, rhor, ur) = right_state
     (xl, xr, xi) = geometry
+
+    # basic checking
+    if xl >= xr:
+        print('xl has to be less than xr!')
+        exit()
+    if xi >= xr or xi <= xl:
+        print('xi has in between xl and xr!')
+        exit()
 
     # ..begin solution
     p1, rho1, u1, p3, rho3, u3, p4, rho4, u4, p5, rho5, u5, w = \
         calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
 
     x_positions = calc_positions(pl, pr, p1, p3,
-                               rho1, rho3,
-                               u3, w, xi, t, gamma)
+                                 rho1, rho3,
+                                 u3, w, xi, t, gamma)
     print(x_positions)
 
-    pos_decr = ('Head of Rarefaction', 'Foot of Rarefaction',
-                'Contact Discontinuity', 'Shock')
-    positions = dict(zip(pos_decr, x_positions))
+    pos_description = ('Head of Rarefaction', 'Foot of Rarefaction',
+                       'Contact Discontinuity', 'Shock')
+    positions = dict(zip(pos_description, x_positions))
 
     for desc, values in positions.items():
         print('{0:10} ==> {1}'.format(desc, values))
@@ -204,7 +225,7 @@ def solver(left_state, right_state, geometry, t, gamma=1.4, npts=500):
                             rho1, rho3, rho4, rho5,
                             u1, u3, u4, u5)
 
-    #for region, values in sorted(regions.items()):
+    # for region, values in sorted(regions.items()):
     #    print('{0:10} ==> {1}'.format(region, values))
 
 
@@ -218,6 +239,6 @@ def solver(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     return positions, regions, val_dict
 
 if __name__ == '__main__':
-    solver(left_state=(1, 1, 0), right_state=(0.1, 0.125, 0.),
-           geometry=(0., 1., 0.5), t=0.2)
+    solve_sod(left_state=(1, 1, 0), right_state=(0.1, 0.125, 0.),
+              geometry=(0., 1., 0.5), t=0.2)
 
