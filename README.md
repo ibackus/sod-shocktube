@@ -78,7 +78,7 @@ The usage should be straightforward:
     plt.show()
 ```
 
-Which should resultgive as the following plots: 
+Which should give us the following plots: 
 
 ![pressure](/figs/pressure.png)
 ![density](/figs/density.png)
