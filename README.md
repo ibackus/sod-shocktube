@@ -77,8 +77,20 @@ The usage should be straightforward:
     plt.xlabel('x')
     plt.show()
 ```
+Whicc should give us the following output:
+>Positions:
+>Shock      : 0.8504311464060357
+>Contact Discontinuity : 0.6854905240097902
+>Head of Rarefaction : 0.26335680867601535
+>Foot of Rarefaction : 0.4859454374877634
+>Regions:
+>Region 1   : (1, 1, 0)
+>Region 2   : RAREFACTION
+>Region 3   : (0.30313017805064707, 0.42631942817849544, 0.92745262004895057)
+>Region 4   : (0.30313017805064707, 0.26557371170530725, 0.92745262004895057)
+>Region 5   : (0.1, 0.125, 0.0)
 
-Which should give us the following plots:
+Let's not forget the plots:
 
 ![pressure](/figs/pressure.png)
 ![density](/figs/density.png)
