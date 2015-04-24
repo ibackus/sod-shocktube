@@ -25,6 +25,7 @@ Sod solver returns after time of evolution the following variables:
 1. Positions of head and foot of rarefation wave, contact discontinuity and shock
 2. Constant pressure, density and velocity for all regions except rarefaction region
 3. Pressure, density and velocity sampled across the domain of interest
+
 ## Licence
 
 The MIT License (MIT)
