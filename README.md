@@ -14,6 +14,11 @@ The ratio of specific heats is 1.4.
 
 ## About the code
 The code logic is blatantly copied from dr. Timmes' [website](http://cococubed.asu.edu/code_pages/exact_riemann.shtml).
+Sod solver returns after time of evolution the following variables:
+1. Positions of head and foot of rarefation wave, contact discontinuity and shock
+2. Constant pressure, density and velocity for all regions except rarefaction region
+3. Pressure, density and velocity sampled across the domain of interest
+
 The usage should be straightforward:
 ```python
     import sod
@@ -72,11 +77,14 @@ The usage should be straightforward:
     plt.xlabel('x')
     plt.show()
 ```
-Sod solver returns after time of evolution the following variables:
-1. Positions of head and foot of rarefation wave, contact discontinuity and shock
-2. Constant pressure, density and velocity for all regions except rarefaction region
-3. Pressure, density and velocity sampled across the domain of interest
 
+Which should resultgive as the following plots: 
+
+![pressure](/figs/pressure.png)
+![density](/figs/density.png)
+![velocity](/figs/velocity.png)
+![energy](/figs/energy.png)
+![temperature](/figs/temperature.png)
 ## Licence
 
 The MIT License (MIT)
