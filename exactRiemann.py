@@ -45,7 +45,6 @@ if __name__ == '__main__':
     plt.ylabel('velocity')
     plt.xlabel('x')
 
-
     plt.figure(4)
     plt.plot(values['x'], E, linewidth=1.5, color='k')
     plt.ylabel('Energy')
