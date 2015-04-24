@@ -1,3 +1,4 @@
+
 import sod
 import matplotlib.pyplot as plt
 
@@ -19,12 +20,12 @@ if __name__ == '__main__':
     for region, vals in sorted(regions.items()):
         print('{0:10} : {1}'.format(region, vals))
 
-    # Finally, let's plot solutions
+    # Finally, let's plot the solutions
     p = values['p']
     rho = values['rho']
     u = values['u']
 
-    # Energy and temperature
+    # Create energy and temperature
     E = p/(gamma-1.) + 0.5*u**2
     T = p/rho
 

@@ -1,5 +1,3 @@
-
-import math
 import numpy as np
 import scipy
 import scipy.optimize
@@ -7,14 +5,14 @@ import scipy.optimize
 
 def f(p4, p1, p5, rho1, rho5, gamma):
     z = (p4 / p5 - 1.)
-    c1 = math.sqrt(gamma * p1 / rho1)
-    c5 = math.sqrt(gamma * p5 / rho5)
+    c1 = np.sqrt(gamma * p1 / rho1)
+    c5 = np.sqrt(gamma * p5 / rho5)
 
     gm1 = gamma - 1.
     gp1 = gamma + 1.
     g2 = 2. * gamma
 
-    fact = gm1 / g2 * (c5 / c1) * z / math.sqrt(1. + gp1 / g2 * z)
+    fact = gm1 / g2 * (c5 / c1) * z / np.sqrt(1. + gp1 / g2 * z)
     fact = (1. - fact) ** (g2 / gm1)
 
     return p1 * fact - p4
@@ -23,17 +21,10 @@ def f(p4, p1, p5, rho1, rho5, gamma):
 def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
     """
     Compute regions
-    :param pl:
-    :param ul:
-    :param rhol:
-    :param pr:
-    :param ur:
-    :param rhor:
-    :param gamma:
-    :return:
+    :rtype : tuple
+    :return: returns p, rho and u for regions 1,3,4,5 as well as the shock speed
     """
-    # ..begin solution
-    # if pl > pr
+    # if pl > pr...
     rho1 = rhol
     p1 = pl
     u1 = ul
@@ -50,27 +41,27 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
         p5 = pl
         u5 = ul
 
-    # ..solve for post-shock pressure
+    # solve for post-shock pressure
     p4 = scipy.optimize.fsolve(f, p1, (p1, p5, rho1, rho5, gamma))[0]
 
-    # c..compute post-shock density and velocity
+    # compute post-shock density and velocity
     z = (p4 / p5 - 1.)
-    c5 = math.sqrt(gamma * p5 / rho5)
+    c5 = np.sqrt(gamma * p5 / rho5)
 
     gm1 = gamma - 1.
     gp1 = gamma + 1.
     gmfac1 = 0.5 * gm1 / gamma
     gmfac2 = 0.5 * gp1 / gamma
 
-    fact = math.sqrt(1. + gmfac2 * z)
+    fact = np.sqrt(1. + gmfac2 * z)
 
     u4 = c5 * z / (gamma * fact)
     rho4 = rho5 * (1. + gmfac2 * z) / (1. + gmfac1 * z)
 
-    # c..shock speed
+    # shock speed
     w = c5 * fact
 
-    # c..compute values at foot of rarefaction
+    # compute values at foot of rarefaction
     p3 = p4
     u3 = u4
     rho3 = rho1 * (p3 / p1)**(1. / gamma)
@@ -80,10 +71,10 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
 def calc_positions(pl, pr, p1, p3, rho1, rho3, u3, w, xi, t, gamma):
     """
     :return: Head of Rarefaction: xhd,  Foot of Rarefaction: xft,
-            Contact Discontinuity: xcd, Shock: xsh}
+            Contact Discontinuity: xcd, Shock: xsh
     """
-    c1 = math.sqrt(gamma * p1 / rho1)
-    c3 = math.sqrt(gamma * p3 / rho3)
+    c1 = np.sqrt(gamma * p1 / rho1)
+    c3 = np.sqrt(gamma * p3 / rho3)
     if pl > pr:
         xsh = xi + w * t
         xcd = xi + u3 * t
@@ -100,6 +91,9 @@ def calc_positions(pl, pr, p1, p3, rho1, rho3, u3, w, xi, t, gamma):
 
 
 def region_states(pl, pr, p1, p3, p4, p5, rho1, rho3, rho4, rho5, u1, u3, u4, u5):
+    """
+    :return: dictionary (region no.: p, rho, u), except for rarefaction region, where the value is a string
+    """
     if pl > pr:
         return {'Region 1': (p1, rho1, u1),
                 'Region 2': 'RAREFACTION',
@@ -115,6 +109,9 @@ def region_states(pl, pr, p1, p3, p4, p5, rho1, rho3, rho4, rho5, u1, u3, u4, u5
 
 
 def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npts, gamma, t, xi):
+    """
+    :return: tuple of x, p, rho and u values across the domain of interest
+    """
     (xhd, xft, xcd, xsh) = positions
     (p1, rho1, u1) = state1
     (p3, rho3, u3) = state3
@@ -128,7 +125,7 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     rho = np.zeros(npts, dtype=float)
     p = np.zeros(npts, dtype=float)
     u = np.zeros(npts, dtype=float)
-    c1 = math.sqrt(gamma * p1 / rho1)
+    c1 = np.sqrt(gamma * p1 / rho1)
     if pl > pr:
         for i, x in enumerate(x_arr):
             if x < xhd:
@@ -181,8 +178,9 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
 
 def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     """
-    Solves the Sod problem (which is a riemann problem) of discontinuity across an interface.
+    Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity across an interface.
 
+    :rtype : tuple
     :param left_state: tuple (pl, rhol, ul)
     :param right_state: tuple (pr, rhor, ur)
     :param geometry: tuple (xl, xr, xi): xl - left boundary, xr - right boundary, xi - initial discontinuity
@@ -194,9 +192,9 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     arrays of pressure, density and velocity in domain bounded by xl, xr
     """
 
-    (pl, rhol, ul) = left_state
-    (pr, rhor, ur) = right_state
-    (xl, xr, xi) = geometry
+    pl, rhol, ul = left_state
+    pr, rhor, ur = right_state
+    xl, xr, xi = geometry
 
     # basic checking
     if xl >= xr:
@@ -206,10 +204,15 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
         print('xi has in between xl and xr!')
         exit()
 
-    # ..begin solution
+    # calculate regions
     p1, rho1, u1, p3, rho3, u3, p4, rho4, u4, p5, rho5, u5, w = \
         calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
 
+    regions = region_states(pl, pr, p1, p3, p4, p5,
+                            rho1, rho3, rho4, rho5,
+                            u1, u3, u4, u5)
+
+    # calculate positions
     x_positions = calc_positions(pl, pr, p1, p3,
                                  rho1, rho3,
                                  u3, w, xi, t, gamma)
@@ -218,9 +221,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
                        'Contact Discontinuity', 'Shock')
     positions = dict(zip(pos_description, x_positions))
 
-    regions = region_states(pl, pr, p1, p3, p4, p5,
-                            rho1, rho3, rho4, rho5,
-                            u1, u3, u4, u5)
+
 
     x, p, rho, u = create_arrays(pl, pr, xl, xr, x_positions,
                                  (p1, rho1, u1), (p3, rho3, u3),
