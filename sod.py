@@ -65,7 +65,7 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
     p3 = p4
     u3 = u4
     rho3 = rho1 * (p3 / p1)**(1. / gamma)
-    return p1, rho1, u1, p3, rho3, u3, p4, rho4, u4, p5, rho5, u5, w
+    return (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w
 
 
 def calc_positions(pl, pr, p1, p3, rho1, rho3, u3, w, xi, t, gamma):
@@ -205,7 +205,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
         exit()
 
     # calculate regions
-    p1, rho1, u1, p3, rho3, u3, p4, rho4, u4, p5, rho5, u5, w = \
+    (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w = \
         calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
 
     regions = region_states(pl, pr, p1, p3, p4, p5,
