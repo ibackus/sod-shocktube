@@ -213,22 +213,14 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     x_positions = calc_positions(pl, pr, p1, p3,
                                  rho1, rho3,
                                  u3, w, xi, t, gamma)
-    print(x_positions)
 
     pos_description = ('Head of Rarefaction', 'Foot of Rarefaction',
                        'Contact Discontinuity', 'Shock')
     positions = dict(zip(pos_description, x_positions))
 
-    for desc, values in positions.items():
-        print('{0:10} ==> {1}'.format(desc, values))
-
     regions = region_states(pl, pr, p1, p3, p4, p5,
                             rho1, rho3, rho4, rho5,
                             u1, u3, u4, u5)
-
-    # for region, values in sorted(regions.items()):
-    #    print('{0:10} ==> {1}'.format(region, values))
-
 
     x, p, rho, u = create_arrays(pl, pr, xl, xr, x_positions,
                                  (p1, rho1, u1), (p3, rho3, u3),
@@ -238,4 +230,3 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     val_dict = dict(zip(val_names, (x, p, rho, u)))
 
     return positions, regions, val_dict
-
