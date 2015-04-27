@@ -7,15 +7,20 @@ if __name__ == '__main__':
     gamma = 1.4
     npts = 500
 
-    # note that gamma and npts are default parameters in solve
+    # left_state and right_state set p, rho and u
+    # geometry sets left boundary on 0., right boundary on 1 and initial
+    # position of the shock xi on 0.5
+    # t is the time evolution for which positions and states in tube should be calculated
+    # gamma denotes specific heat
+    # note that gamma and npts are default parameters (1.4 and 500) in solve function
     positions, regions, values = sod.solve(left_state=(1, 1, 0), right_state=(0.1, 0.125, 0.),
                                            geometry=(0., 1., 0.5), t=0.2, gamma=gamma, npts=npts)
-    # Let's print positions
+    # Printing positions
     print('Positions:')
     for desc, vals in positions.items():
         print('{0:10} : {1}'.format(desc, vals))
 
-    # Let's print regions
+    # Printing p, rho and u for regions
     print('Regions:')
     for region, vals in sorted(regions.items()):
         print('{0:10} : {1}'.format(region, vals))
