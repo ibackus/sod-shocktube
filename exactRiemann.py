@@ -1,5 +1,6 @@
 
 import sod
+import numpy as np
 import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
@@ -25,40 +26,38 @@ if __name__ == '__main__':
     for region, vals in sorted(regions.items()):
         print('{0:10} : {1}'.format(region, vals))
 
-    # Finally, let's plot the solutions
-    p = values['p']
-    rho = values['rho']
-    u = values['u']
-
     # Create energy and temperature
-    E = p/(gamma-1.) + 0.5*u**2
-    T = p/rho
+    E = values['p']/(gamma-1.) + 0.5*values['u']**2
+    T = values['p']/values['rho']
+    # Mach number: u/c
+    M = values['u']/np.sqrt(values['p']/values['rho'])
 
-    plt.figure(1)
-    plt.plot(values['x'], p, linewidth=1.5, color='b')
-    plt.ylabel('pressure')
-    plt.xlabel('x')
-    plt.axis([0, 1, 0, 1.1])
+    # and add them to previous results
+    values.update({"E": E, "T": T, "M": M})
 
-    plt.figure(2)
-    plt.plot(values['x'], rho, linewidth=1.5, color='r')
-    plt.ylabel('density')
-    plt.xlabel('x')
-    plt.axis([0, 1, 0, 1.1])
+    # Finally, let's plot the solutions
+    plt.close('all')
+    f, axarr = plt.subplots(len(values)-1, sharex=True)
 
-    plt.figure(3)
-    plt.plot(values['x'], u, linewidth=1.5, color='g')
-    plt.ylabel('velocity')
-    plt.xlabel('x')
+    axarr[0].plot(values['x'], values['p'], linewidth=1.5, color='b')
+    axarr[0].set_ylabel('pressure')
+    axarr[0].set_ylim(0, 1.1)
 
-    plt.figure(4)
-    plt.plot(values['x'], E, linewidth=1.5, color='k')
-    plt.ylabel('Energy')
-    plt.xlabel('x')
-    plt.axis([0, 1, 0, 2.6])
+    axarr[1].plot(values['x'], values['rho'], linewidth=1.5, color='r')
+    axarr[1].set_ylabel('density')
+    axarr[1].set_ylim(0, 1.1)
 
-    plt.figure(5)
-    plt.plot(values['x'], T, linewidth=1.5, color='c')
-    plt.ylabel('Temperature')
-    plt.xlabel('x')
+    axarr[2].plot(values['x'], values['u'], linewidth=1.5, color='g')
+    axarr[2].set_ylabel('velocity')
+
+    axarr[3].plot(values['x'], values['E'], linewidth=1.5, color='k')
+    axarr[3].set_ylabel('energy')
+    axarr[3].set_ylim(0, 2.6)
+
+    axarr[4].plot(values['x'], values['T'], linewidth=1.5, color='c')
+    axarr[4].set_ylabel('temperature')
+
+    axarr[5].plot(values['x'], values['M'], linewidth=1.5, color='y')
+    axarr[5].set_ylabel('Mach number')
+
     plt.show()
