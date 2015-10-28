@@ -5,6 +5,7 @@ The Sod shock tube is a Riemann problem used as a standard test problem in compu
 Checkout the article in [Wikipedia](http://en.wikipedia.org/wiki/Sod_shock_tube)
 for a more complete description of the Sod problem.
 This module should calculate analytical solutions for various initial conditions.
+To see it in action, check out rendered ipython notebook example on [here](http://nbviewer.ipython.org/urls/gitlab.com/fantaz/Riemann_exact/raw/master/sod.ipynb)
 
 ### Standard test case
 In the standard case the density and pressure on the left are unity,
