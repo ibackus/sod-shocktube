@@ -3,20 +3,26 @@ import scipy
 import scipy.optimize
 
 
-def sound_speed(gamma, pressure, density, scale=np.sqrt(.5)):
+def sound_speed(gamma, pressure, density, dustFrac=0.):
+    """
+    Calculate sound speed, scaled by the dust fraction according to:
+        
+        .. math::
+            \widetilde{c}_s = c_s \sqrt{1 - \epsilon}
     
+    Where :math:`\epsilon` is the dustFrac
+    """
+    scale = np.sqrt(1 - dustFrac)
     return np.sqrt(gamma * pressure/ density) * scale
 
-def shock_tube_function(p4, p1, p5, rho1, rho5, gamma):
+def shock_tube_function(p4, p1, p5, rho1, rho5, gamma, dustFrac=0.):
     """
     Shock tube equation
     """
     z = (p4 / p5 - 1.)
-    c1 = sound_speed(gamma, p1, rho1)
-    c5 = sound_speed(gamma, p5, rho5)
-#    c1 = np.sqrt(gamma * p1 / rho1)
-#    c5 = np.sqrt(gamma * p5 / rho5)
-
+    c1 = sound_speed(gamma, p1, rho1, dustFrac)
+    c5 = sound_speed(gamma, p5, rho5, dustFrac)
+    
     gm1 = gamma - 1.
     gp1 = gamma + 1.
     g2 = 2. * gamma
@@ -27,7 +33,7 @@ def shock_tube_function(p4, p1, p5, rho1, rho5, gamma):
     return p1 * fact - p4
 
 
-def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
+def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4, dustFrac=0.):
     """
     Compute regions
     :rtype : tuple
@@ -55,8 +61,7 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
 
     # compute post-shock density and velocity
     z = (p4 / p5 - 1.)
-    c5 = sound_speed(gamma, p5, rho5)
-#    c5 = np.sqrt(gamma * p5 / rho5)
+    c5 = sound_speed(gamma, p5, rho5, dustFrac)
 
     gm1 = gamma - 1.
     gp1 = gamma + 1.
@@ -78,7 +83,7 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
     return (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w
 
 
-def calc_positions(pl, pr, region1, region3, w, xi, t, gamma):
+def calc_positions(pl, pr, region1, region3, w, xi, t, gamma, dustFrac=0.):
     """
     :return: tuple of positions in the following order ->
             Head of Rarefaction: xhd,  Foot of Rarefaction: xft,
@@ -86,10 +91,9 @@ def calc_positions(pl, pr, region1, region3, w, xi, t, gamma):
     """
     p1, rho1 = region1[:2]  # don't need velocity
     p3, rho3, u3 = region3
-    c1 = sound_speed(gamma, p1, rho1)
-    c3 = sound_speed(gamma, p3, rho3)
-#    c1 = np.sqrt(gamma * p1 / rho1)
-#    c3 = np.sqrt(gamma * p3 / rho3)
+    c1 = sound_speed(gamma, p1, rho1, dustFrac)
+    c3 = sound_speed(gamma, p3, rho3, dustFrac)
+    
     if pl > pr:
         xsh = xi + w * t
         xcd = xi + u3 * t
@@ -124,7 +128,8 @@ def region_states(pl, pr, region1, region3, region4, region5):
                 'Region 5': region1}
 
 
-def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npts, gamma, t, xi):
+def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, 
+                  npts, gamma, t, xi, dustFrac=0.):
     """
     :return: tuple of x, p, rho and u values across the domain of interest
     """
@@ -141,7 +146,7 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     rho = np.zeros(npts, dtype=float)
     p = np.zeros(npts, dtype=float)
     u = np.zeros(npts, dtype=float)
-    c1 = sound_speed(gamma, p1, rho1)
+    c1 = sound_speed(gamma, p1, rho1, dustFrac)
     if pl > pr:
         for i, x in enumerate(x_arr):
             if x < xhd:
@@ -192,7 +197,7 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     return x_arr, p, rho, u
 
 
-def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
+def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500, dustFrac=0.):
     """
     Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity across an interface.
 
@@ -203,6 +208,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     :param t: time for which the states have to be calculated
     :param gamma: ideal gas constant, default is air: 1.4
     :param npts: number of points for array of pressure, density and velocity
+    :param dustFrac: Dust fraction for the gas.  Must uniform across all regions
     :return: tuple of: dicts of positions,
     constant pressure, density and velocity states in distinct regions,
     arrays of pressure, density and velocity in domain bounded by xl, xr
@@ -222,12 +228,13 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
 
     # calculate regions
     region1, region3, region4, region5, w = \
-        calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma)
+        calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma, dustFrac)
 
     regions = region_states(pl, pr, region1, region3, region4, region5)
 
     # calculate positions
-    x_positions = calc_positions(pl, pr, region1, region3, w, xi, t, gamma)
+    x_positions = calc_positions(pl, pr, region1, region3, w, xi, t, gamma,
+                                 dustFrac)
 
     pos_description = ('Head of Rarefaction', 'Foot of Rarefaction',
                        'Contact Discontinuity', 'Shock')
@@ -236,7 +243,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500):
     # create arrays
     x, p, rho, u = create_arrays(pl, pr, xl, xr, x_positions,
                                  region1, region3, region4, region5,
-                                 npts, gamma, t, xi)
+                                 npts, gamma, t, xi, dustFrac)
 
     val_names = ('x', 'p', 'rho', 'u')
     val_dict = dict(zip(val_names, (x, p, rho, u)))
