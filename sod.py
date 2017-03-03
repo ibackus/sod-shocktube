@@ -3,13 +3,19 @@ import scipy
 import scipy.optimize
 
 
+def sound_speed(gamma, pressure, density, scale=np.sqrt(.5)):
+    
+    return np.sqrt(gamma * pressure/ density) * scale
+
 def shock_tube_function(p4, p1, p5, rho1, rho5, gamma):
     """
     Shock tube equation
     """
     z = (p4 / p5 - 1.)
-    c1 = np.sqrt(gamma * p1 / rho1)
-    c5 = np.sqrt(gamma * p5 / rho5)
+    c1 = sound_speed(gamma, p1, rho1)
+    c5 = sound_speed(gamma, p5, rho5)
+#    c1 = np.sqrt(gamma * p1 / rho1)
+#    c5 = np.sqrt(gamma * p5 / rho5)
 
     gm1 = gamma - 1.
     gp1 = gamma + 1.
@@ -49,7 +55,8 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4):
 
     # compute post-shock density and velocity
     z = (p4 / p5 - 1.)
-    c5 = np.sqrt(gamma * p5 / rho5)
+    c5 = sound_speed(gamma, p5, rho5)
+#    c5 = np.sqrt(gamma * p5 / rho5)
 
     gm1 = gamma - 1.
     gp1 = gamma + 1.
@@ -79,8 +86,10 @@ def calc_positions(pl, pr, region1, region3, w, xi, t, gamma):
     """
     p1, rho1 = region1[:2]  # don't need velocity
     p3, rho3, u3 = region3
-    c1 = np.sqrt(gamma * p1 / rho1)
-    c3 = np.sqrt(gamma * p3 / rho3)
+    c1 = sound_speed(gamma, p1, rho1)
+    c3 = sound_speed(gamma, p3, rho3)
+#    c1 = np.sqrt(gamma * p1 / rho1)
+#    c3 = np.sqrt(gamma * p3 / rho3)
     if pl > pr:
         xsh = xi + w * t
         xcd = xi + u3 * t
@@ -132,7 +141,7 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, npt
     rho = np.zeros(npts, dtype=float)
     p = np.zeros(npts, dtype=float)
     u = np.zeros(npts, dtype=float)
-    c1 = np.sqrt(gamma * p1 / rho1)
+    c1 = sound_speed(gamma, p1, rho1)
     if pl > pr:
         for i, x in enumerate(x_arr):
             if x < xhd:
