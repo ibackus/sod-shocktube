@@ -1,5 +1,7 @@
 # Sod shock tube calculator
 
+This repository is a fork of the Riemann solver implemented at [https://gitlab.com/fantaz/Riemann_exact](https://gitlab.com/fantaz/Riemann_exact), which is itself just a pythonic clone of the [fortran code by Bruce Fryxell](http://cococubed.asu.edu/codes/riemann/exact_riemann.f).
+
 ## Description
 The Sod shock tube is a Riemann problem used as a standard test problem in computational hydrodynamics.
 Checkout the article in [Wikipedia](http://en.wikipedia.org/wiki/Sod_shock_tube)
