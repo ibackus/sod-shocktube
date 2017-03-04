@@ -140,9 +140,8 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
     p5, rho5, u5 = state5
     gm1 = gamma - 1.
     gp1 = gamma + 1.
-
-    dx = (xr-xl)/(npts-1)
-    x_arr = np.arange(xl, xr, dx)
+    
+    x_arr = np.linspace(xl, xr, npts)
     rho = np.zeros(npts, dtype=float)
     p = np.zeros(npts, dtype=float)
     u = np.zeros(npts, dtype=float)
