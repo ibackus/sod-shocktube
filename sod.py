@@ -196,21 +196,35 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
     return x_arr, p, rho, u
 
 
-def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500, dustFrac=0.):
+def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500, 
+          dustFrac=0.):
     """
     Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity across an interface.
-
-    :rtype : tuple
-    :param left_state: tuple (pl, rhol, ul)
-    :param right_state: tuple (pr, rhor, ur)
-    :param geometry: tuple (xl, xr, xi): xl - left boundary, xr - right boundary, xi - initial discontinuity
-    :param t: time for which the states have to be calculated
-    :param gamma: ideal gas constant, default is air: 1.4
-    :param npts: number of points for array of pressure, density and velocity
-    :param dustFrac: Dust fraction for the gas.  Must uniform across all regions
-    :return: tuple of: dicts of positions,
-    constant pressure, density and velocity states in distinct regions,
-    arrays of pressure, density and velocity in domain bounded by xl, xr
+    
+    Parameters
+    ----------
+    left_state, right_state: tuple
+        A tuple of the state (pressure, density, velocity) on each side of the
+        shocktube barrier for the ICs
+    geometry: tuple
+        A tuple of positions for (left boundary, right boundary, barrier)
+    t: float
+        Time to calculate the solution at
+    gamma: float
+        Adiabatic index for the gas.
+    npts: int
+        number of points for array of pressure, density and velocity
+    dustFrac: float
+        Uniform fraction for the gas, between 0 and 1.
+    
+    Returns
+    -------
+    positions: dict
+        Locations of the important places (rarefaction wave, shock, etc...)
+    regions: dict
+        constant pressure, density and velocity states in distinct regions
+    values: dict
+        Arrays of pressure, density, and velocity as a function of position
     """
 
     pl, rhol, ul = left_state
