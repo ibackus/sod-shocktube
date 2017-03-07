@@ -199,13 +199,15 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
 def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500, 
           dustFrac=0.):
     """
-    Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity across an interface.
+    Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity 
+    across an interface.
     
     Parameters
     ----------
     left_state, right_state: tuple
         A tuple of the state (pressure, density, velocity) on each side of the
-        shocktube barrier for the ICs
+        shocktube barrier for the ICs.  In the case of a dusty-gas, the density
+        should be the gas density.
     geometry: tuple
         A tuple of positions for (left boundary, right boundary, barrier)
     t: float
@@ -224,7 +226,10 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
     regions: dict
         constant pressure, density and velocity states in distinct regions
     values: dict
-        Arrays of pressure, density, and velocity as a function of position
+        Arrays of pressure, density, and velocity as a function of position.
+        The density ('rho') is the gas density, which may differ from the 
+        total density in a dusty-gas.
+        Also calculates the specific internal energy
     """
 
     pl, rhol, ul = left_state
@@ -258,7 +263,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
                                  region1, region3, region4, region5,
                                  npts, gamma, t, xi, dustFrac)
 
-    val_names = ('x', 'p', 'rho', 'u')
-    val_dict = dict(zip(val_names, (x, p, rho, u)))
+    energy = p/(rho * (gamma - 1.0))
+    val_dict = {'x':x, 'p':p, 'rho':rho, 'u':u, 'energy':energy}
 
     return positions, regions, val_dict
