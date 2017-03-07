@@ -264,6 +264,8 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
                                  npts, gamma, t, xi, dustFrac)
 
     energy = p/(rho * (gamma - 1.0))
-    val_dict = {'x':x, 'p':p, 'rho':rho, 'u':u, 'energy':energy}
+    rho_total = rho/(1.0 - dustFrac)
+    val_dict = {'x':x, 'p':p, 'rho':rho, 'u':u, 'energy':energy, 
+                'rho_total':rho_total}
 
     return positions, regions, val_dict
