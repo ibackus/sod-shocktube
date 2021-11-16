@@ -9,6 +9,5 @@ scripts = sorted(glob.glob(os.path.join(_EXAMPLE_DIR, '*.py')))
 
 
 @pytest.mark.parametrize('script', scripts)
-def test_script_execution(script, monkeypatch):
-    monkeypatch.setenv('KEEP_FIGURES_OPEN', 'false')
+def test_script_execution(script):
     runpy.run_path(script)
