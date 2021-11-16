@@ -1,5 +1,5 @@
 
-import sod
+import sodshock
 import matplotlib.pyplot as plt
 import os
 
@@ -24,7 +24,7 @@ if __name__ == '__main__':
     # gamma denotes specific heat
     # note that gamma and npts are default parameters (1.4 and 500) in solve 
     # function
-    positions, regions, values = sod.solve(left_state=left_state, \
+    positions, regions, values = sodshock.solve(left_state=left_state, \
         right_state=right_state, geometry=(0., 1., 0.5), t=t, 
         gamma=gamma, npts=npts, dustFrac=dustFrac)
     # Printing positions

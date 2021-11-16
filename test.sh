@@ -1,5 +1,7 @@
 #!/bin/bash
-KEEP_FIGURES_OPEN=false MPLBACKEND=tkagg python2 exactRiemann.py
+export PYTHONPATH="src/:tests/:$PYTHONPATH"
+
+KEEP_FIGURES_OPEN=false MPLBACKEND=tkagg python2 tests/exactRiemann.py
 if [[ "$?" -eq "0" ]]; then
   echo "Example script passed successfully"
 else

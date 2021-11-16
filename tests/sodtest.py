@@ -1,4 +1,4 @@
-import sod
+import sodshock
 import numpy as np
 from numpy.testing import assert_almost_equal
 _VALUES_KEYS = ('energy', 'p', 'u', 'rho', 'rho_total', 'x')
@@ -12,9 +12,10 @@ def run_sod():
     left_state = (1, 1, 0)
     right_state = (0.1, 0.125, 0.)
 
-    positions, regions, values = sod.solve(left_state=left_state, \
-                                           right_state=right_state, geometry=(0., 1., 0.5), t=t,
-                                           gamma=gamma, npts=npts, dustFrac=dustFrac)
+    positions, regions, values = sodshock.solve(
+        left_state=left_state, right_state=right_state, geometry=(0., 1., 0.5), t=t,
+        gamma=gamma, npts=npts, dustFrac=dustFrac
+    )
     return positions, regions, values
 
 
@@ -60,7 +61,6 @@ def test_values_agree(values):
     assert set(values.keys()) == set(v_true.keys())
     for k, v1 in v_true.items():
         assert_almost_equal(v1, values[k])
-
 
 
 def test_results_are_correct():
