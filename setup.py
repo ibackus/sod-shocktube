@@ -1,5 +1,11 @@
 import setuptools
 
+# [
+#         'numpy >= 1.16',
+#         'matplotlib >= 2.2',
+#         'scipy >= 1.2',
+#         'python == 2.7.*',
+#     ]
 
 setuptools.setup(
     name="sodshock",
@@ -11,10 +17,10 @@ setuptools.setup(
     packages=setuptools.find_packages('src', exclude=['tests']),
     package_dir={"": "src"},
     install_requires=[
-        'numpy >= 1.16',
-        'matplotlib >= 2.2',
-        'scipy >= 1.2',
-        'python == 2.7.*',
+        'numpy >= 1.3.0',
+        'matplotlib >= 2.0.0',
+        'scipy >= 1.0.0',
+        'python == 2.7',
     ],
     classifiers=[
         'Programming Language :: Python',
