@@ -1,7 +1,11 @@
 
 import sod
-import numpy as np
 import matplotlib.pyplot as plt
+import os
+
+blockstr = os.environ.get('KEEP_FIGURES_OPEN', 'yes')
+block = blockstr.lower() in ('1', 'y', 'yes', 'true')
+
 
 if __name__ == '__main__':
 
@@ -49,4 +53,4 @@ if __name__ == '__main__':
     
     plt.suptitle('Shocktube results at t={0}\ndust fraction = {1}, gamma={2}'\
                  .format(t, dustFrac, gamma))
-    plt.show()
+    plt.show(block=block)
