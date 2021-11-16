@@ -1,6 +1,7 @@
 # Sod shock tube calculator
 
-A simple package to numerically solve the sod shock tube problem for python 2.7 and 3.5+
+A simple package to numerically solve the sod shock tube problem for python 2.7 and 3.5+, including a modified solution
+for a dust-gas mixture as used in the 3D hydrodymamic simulations presented in my PhD Thesis, [Backus(2017)](http://hdl.handle.net/1773/40959).
 
 This repository is a fork of the Riemann solver implemented at [https://gitlab.com/fantaz/Riemann_exact](https://gitlab.com/fantaz/Riemann_exact), which is itself just a pythonic clone of the [fortran code by Bruce Fryxell](http://cococubed.asu.edu/codes/riemann/exact_riemann.f).
 
