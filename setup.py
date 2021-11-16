@@ -15,7 +15,6 @@ setuptools.setup(
         'matplotlib >= 2.2',
         'scipy >= 1.2',
         'python == 2.7.*',
-        'pytest >= 4.6',
     ],
     classifiers=[
         'Programming Language :: Python',
