@@ -1,10 +1,13 @@
+import pytest
+
 import sodshock
 import numpy as np
 from numpy.testing import assert_almost_equal
 _VALUES_KEYS = ('energy', 'p', 'u', 'rho', 'rho_total', 'x')
 
 
-def run_sod():
+@pytest.fixture
+def sod():
     gamma = 1.4
     dustFrac = 0.0
     npts = 500
@@ -19,14 +22,8 @@ def run_sod():
     return positions, regions, values
 
 
-def run_test():
-    p, r, v = run_sod()
-    test_positions_agree(p)
-    test_regions_agree(r)
-    test_values_agree(v)
-
-
-def test_regions_agree(regions):
+def test_regions_agree(sod):
+    regions = sod[1]
     r_true = {
         'Region 1': (1, 1, 0),
         'Region 2': 'RAREFACTION',
@@ -44,7 +41,8 @@ def test_regions_agree(regions):
     assert regions['Region 2'] == r_true['Region 2']
 
 
-def test_positions_agree(positions):
+def test_positions_agree(sod):
+    positions = sod[0]
     p_true = {
         'Contact Discontinuity': 0.6854905240097902,
         'Foot of Rarefaction': 0.4859454374877634,
@@ -56,19 +54,16 @@ def test_positions_agree(positions):
         assert_almost_equal(v, positions[k])
 
 
-def test_values_agree(values):
+def test_values_agree(sod):
+    values = sod[2]
     v_true = _load_data()[2]
     assert set(values.keys()) == set(v_true.keys())
     for k, v1 in v_true.items():
         assert_almost_equal(v1, values[k])
 
 
-def test_results_are_correct():
-    pass
-
-
 def generate_validation_data():
-    p, r, v = run_sod()
+    p, r, v = sod()
     _save_data(p, r, v)
 
 
