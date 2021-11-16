@@ -7,7 +7,7 @@ blockstr = os.environ.get('KEEP_FIGURES_OPEN', 'yes')
 block = blockstr.lower() in ('1', 'y', 'yes', 'true')
 
 
-if __name__ == '__main__':
+def run():
 
     gamma = 1.4
     dustFrac = 0.0
@@ -54,3 +54,7 @@ if __name__ == '__main__':
     plt.suptitle('Shocktube results at t={0}\ndust fraction = {1}, gamma={2}'\
                  .format(t, dustFrac, gamma))
     plt.show(block=block)
+
+
+if __name__ == '__main__':
+    run()

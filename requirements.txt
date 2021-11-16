@@ -1,6 +1,6 @@
-numpy >= 1.16
-matplotlib >= 2.2
-scipy >= 1.2
-pytest >= 4.6
-tox >= 3.24
-tox-conda >= 0.8.3
+numpy == 1.21.4
+matplotlib == 3.4.3
+scipy == 1.7.2
+pytest == 6.2.5
+tox == 3.24.4
+tox-conda == 0.8.3
