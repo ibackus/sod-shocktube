@@ -50,7 +50,7 @@ def test_positions_agree(sod):
         'Shock': 0.8504311464060357
     }
     assert set(positions.keys()) == set(p_true.keys())
-    for k, v in p_true.iteritems():
+    for k, v in p_true.items():
         assert_almost_equal(v, positions[k])
 
 

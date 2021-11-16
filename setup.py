@@ -14,11 +14,11 @@ setuptools.setup(
         'numpy >= 1.3.0',
         'matplotlib >= 2.0.0',
         'scipy >= 1.0.0',
-        'python == 2.7',
     ],
     classifiers=[
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
     ],
 )
