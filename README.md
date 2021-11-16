@@ -10,9 +10,7 @@ This repository is a fork of the Riemann solver implemented at [https://gitlab.c
 To install to your current python environment:
 * Clone the repository: `git clone https://github.com/ibackus/sod-shocktube.git`
 * cd into the directory: `cd sod-shocktube`
-* and install with pip:
-    ```pip install .```
-    Or else `python setup.py install`
+* and install with pip: ```pip install .``` Or else `python setup.py install`
 
 
 ## Description
@@ -114,11 +112,11 @@ Region 5   : (0.1, 0.125, 0.0)
 ```
 Let's not forget the plots:
 
-![pressure](/figs/pressure.png)
-![density](/figs/density.png)
-![velocity](/figs/velocity.png)
-![energy](/figs/energy.png)
-![temperature](/figs/temperature.png)
+![pressure](https://github.com/ibackus/sod-shocktube/blob/master/figs/pressure.png)
+![density](https://github.com/ibackus/sod-shocktube/blob/master/figs/density.png)
+![velocity](https://github.com/ibackus/sod-shocktube/blob/master/figs/velocity.png)
+![energy](https://github.com/ibackus/sod-shocktube/blob/master/figs/energy.png)
+![temperature](https://github.com/ibackus/sod-shocktube/blob/master/figs/temperature.png)
 
 ---
 

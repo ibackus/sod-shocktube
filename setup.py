@@ -8,6 +8,7 @@ setuptools.setup(
     author="Isaac Backus",
     description="A package which numerically solves the sod shock tube problem",
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     packages=setuptools.find_packages('src', exclude=['tests']),
     package_dir={"": "src"},
     install_requires=[
