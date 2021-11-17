@@ -21,10 +21,9 @@ jobs:
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel
-          make build-requirements
 
       - name: "Build and test"
-        run: make build-test
+        run: make build-wheel
       - name: Archive dist package
         uses: actions/upload-artifact@v2
         with:

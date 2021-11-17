@@ -20,6 +20,9 @@ dev-requirements:
 build-requirements:
 	pip install -r build-requirements.txt
 
+tox-requirements:
+	pip install -r tox-requirements.txt
+
 install-dev: build-wheel
 	pip install dist/*.whl
 
