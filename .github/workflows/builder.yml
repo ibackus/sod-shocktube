@@ -45,7 +45,7 @@ jobs:
         with:
           python-version: "${{ matrix.python-version }}"
       - name: "Download build artifacts"
-        uses: actions/download-artifact@2
+        uses: actions/download-artifact@v2
       - name: "Install dependencies"
         run: |
           set -xe
