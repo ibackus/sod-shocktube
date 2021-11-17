@@ -5,7 +5,7 @@ clean-dist:
 	rm -rf dist/
 
 build-wheel: clean-dist build-requirements
-	python setup.py sdist bdist_wheel
+	python setup.py build
 
 publish: build-wheel
 	twine upload --repository pypi dist/*
