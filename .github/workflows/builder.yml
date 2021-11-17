@@ -23,6 +23,7 @@ jobs:
 
       - name: "Build and test"
         run: |
+          set -xe
           make build-wheel
           pip install dist/*
           pytest tests/
