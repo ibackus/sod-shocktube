@@ -51,7 +51,7 @@ jobs:
           python -VV
           python -m site
           python -m pip install --upgrade pip setuptools wheel
-          make build-requirements
+          make tox-requirements
           pip install dist/*.whl
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: tox
