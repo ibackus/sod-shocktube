@@ -1,0 +1,5 @@
+numpy == 1.21.4
+matplotlib == 3.4.3
+scipy == 1.7.2
+-r build-requirements.txt
+-r tox-requirements.txt

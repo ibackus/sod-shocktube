@@ -6,14 +6,15 @@ import scipy.optimize
 def sound_speed(gamma, pressure, density, dustFrac=0.):
     """
     Calculate sound speed, scaled by the dust fraction according to:
-        
+
         .. math::
             \widetilde{c}_s = c_s \sqrt{1 - \epsilon}
-    
+
     Where :math:`\epsilon` is the dustFrac
     """
     scale = np.sqrt(1 - dustFrac)
-    return np.sqrt(gamma * pressure/ density) * scale
+    return np.sqrt(gamma * pressure / density) * scale
+
 
 def shock_tube_function(p4, p1, p5, rho1, rho5, gamma, dustFrac=0.):
     """
@@ -22,7 +23,7 @@ def shock_tube_function(p4, p1, p5, rho1, rho5, gamma, dustFrac=0.):
     z = (p4 / p5 - 1.)
     c1 = sound_speed(gamma, p1, rho1, dustFrac)
     c5 = sound_speed(gamma, p5, rho5, dustFrac)
-    
+
     gm1 = gamma - 1.
     gp1 = gamma + 1.
     g2 = 2. * gamma
@@ -79,7 +80,7 @@ def calculate_regions(pl, ul, rhol, pr, ur, rhor, gamma=1.4, dustFrac=0.):
     # compute values at foot of rarefaction
     p3 = p4
     u3 = u4
-    rho3 = rho1 * (p3 / p1)**(1. / gamma)
+    rho3 = rho1 * (p3 / p1) ** (1. / gamma)
     return (p1, rho1, u1), (p3, rho3, u3), (p4, rho4, u4), (p5, rho5, u5), w
 
 
@@ -93,7 +94,7 @@ def calc_positions(pl, pr, region1, region3, w, xi, t, gamma, dustFrac=0.):
     p3, rho3, u3 = region3
     c1 = sound_speed(gamma, p1, rho1, dustFrac)
     c3 = sound_speed(gamma, p3, rho3, dustFrac)
-    
+
     if pl > pr:
         xsh = xi + w * t
         xcd = xi + u3 * t
@@ -128,7 +129,7 @@ def region_states(pl, pr, region1, region3, region4, region5):
                 'Region 5': region1}
 
 
-def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5, 
+def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
                   npts, gamma, t, xi, dustFrac=0.):
     """
     :return: tuple of x, p, rho and u values across the domain of interest
@@ -140,7 +141,7 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
     p5, rho5, u5 = state5
     gm1 = gamma - 1.
     gp1 = gamma + 1.
-    
+
     x_arr = np.linspace(xl, xr, npts)
     rho = np.zeros(npts, dtype=float)
     p = np.zeros(npts, dtype=float)
@@ -196,12 +197,12 @@ def create_arrays(pl, pr, xl, xr, positions, state1, state3, state4, state5,
     return x_arr, p, rho, u
 
 
-def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500, 
+def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
           dustFrac=0.):
     """
-    Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity 
+    Solves the Sod shock tube problem (i.e. riemann problem) of discontinuity
     across an interface.
-    
+
     Parameters
     ----------
     left_state, right_state: tuple
@@ -218,7 +219,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
         number of points for array of pressure, density and velocity
     dustFrac: float
         Uniform fraction for the gas, between 0 and 1.
-    
+
     Returns
     -------
     positions: dict
@@ -227,7 +228,7 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
         constant pressure, density and velocity states in distinct regions
     values: dict
         Arrays of pressure, density, and velocity as a function of position.
-        The density ('rho') is the gas density, which may differ from the 
+        The density ('rho') is the gas density, which may differ from the
         total density in a dusty-gas.
         Also calculates the specific internal energy
     """
@@ -263,9 +264,9 @@ def solve(left_state, right_state, geometry, t, gamma=1.4, npts=500,
                                  region1, region3, region4, region5,
                                  npts, gamma, t, xi, dustFrac)
 
-    energy = p/(rho * (gamma - 1.0))
-    rho_total = rho/(1.0 - dustFrac)
-    val_dict = {'x':x, 'p':p, 'rho':rho, 'u':u, 'energy':energy, 
-                'rho_total':rho_total}
+    energy = p / (rho * (gamma - 1.0))
+    rho_total = rho / (1.0 - dustFrac)
+    val_dict = {'x': x, 'p': p, 'rho': rho, 'u': u, 'energy': energy,
+                'rho_total': rho_total}
 
     return positions, regions, val_dict

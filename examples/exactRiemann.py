@@ -1,9 +1,13 @@
 
-import sod
-import numpy as np
+import sodshock
 import matplotlib.pyplot as plt
+import os
 
-if __name__ == '__main__':
+blockstr = os.environ.get('KEEP_FIGURES_OPEN', 'yes')
+block = blockstr.lower() in ('1', 'y', 'yes', 'true')
+
+
+def run():
 
     gamma = 1.4
     dustFrac = 0.0
@@ -20,7 +24,7 @@ if __name__ == '__main__':
     # gamma denotes specific heat
     # note that gamma and npts are default parameters (1.4 and 500) in solve 
     # function
-    positions, regions, values = sod.solve(left_state=left_state, \
+    positions, regions, values = sodshock.solve(left_state=left_state, \
         right_state=right_state, geometry=(0., 1., 0.5), t=t, 
         gamma=gamma, npts=npts, dustFrac=dustFrac)
     # Printing positions
@@ -49,4 +53,8 @@ if __name__ == '__main__':
     
     plt.suptitle('Shocktube results at t={0}\ndust fraction = {1}, gamma={2}'\
                  .format(t, dustFrac, gamma))
-    plt.show()
+    plt.show(block=block)
+
+
+if __name__ == '__main__':
+    run()
