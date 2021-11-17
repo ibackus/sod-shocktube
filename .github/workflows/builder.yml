@@ -1,7 +1,6 @@
 name: build stuff
 
 on:
-  push:
   pull_request:
     branches:
       - master
@@ -23,7 +22,10 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
 
       - name: "Build and test"
-        run: make build-wheel
+        run: |
+          make build-wheel
+          pip install dist/*
+          pytest tests/
       - name: Archive dist package
         uses: actions/upload-artifact@v2
         with:
@@ -55,40 +57,3 @@ jobs:
           pip install dist/*.whl
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: tox
-
-#
-#
-## Derived from the example at: https://hynek.me/articles/python-github-actions/
-#
-#name: Run tests
-#
-#on:
-#  push:
-#  pull_request:
-#    branches:
-#      - master
-#
-#jobs:
-#  tests:
-#    name: "Python ${{ matrix.python-version }}"
-#    runs-on: "ubuntu-latest"
-#
-#    strategy:
-#      matrix:
-#        python-version: ["3.5", "3.6", "3.7", "3.8", "3.9"]
-#
-#    steps:
-#      - uses: "actions/checkout@v2"
-#      - uses: "actions/setup-python@v2"
-#        with:
-#          python-version: "${{ matrix.python-version }}"
-#      - name: "Install dependencies"
-#        run: |
-#          set -xe
-#          python -VV
-#          python -m site
-#          python -m pip install --upgrade pip setuptools wheel
-#          make build-requirements
-#
-#      - name: "Run tox targets for ${{ matrix.python-version }}"
-#        run: "python tox"
