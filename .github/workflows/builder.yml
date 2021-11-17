@@ -32,15 +32,18 @@ jobs:
           path: |
             dist/
           retention-days: 14
-  test:
-    name: "Test the build"
+  tests:
+    name: "Python ${{ matrix.python-version }}"
     needs: build
     runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: ["3.5", "3.6", "3.7", "3.8", "3.9"]
     steps:
       - uses: "actions/checkout@v2"
       - uses: "actions/setup-python@v2"
         with:
-          python-version: "3.9"
+          python-version: "${{ matrix.python-version }}"
       - name: "Download build artifacts"
         uses: actions/download-artifact@2
       - name: "Install dependencies"
@@ -51,13 +54,11 @@ jobs:
           python -m pip install --upgrade pip setuptools wheel
           make build-requirements
           pip install dist/*.whl
-      - name: "Test"
-        run: pytest -vvs
+      - name: "Run tox targets for ${{ matrix.python-version }}"
+        run: tox
 
-
-
-
-
+#
+#
 ## Derived from the example at: https://hynek.me/articles/python-github-actions/
 #
 #name: Run tests
