@@ -1,0 +1,46 @@
+name: Release
+
+
+on:
+  release:
+    types: [ released, prereleased]
+  push: # TODO: do not run on push
+    branches:
+      - feature/push-release
+
+jobs:
+  bump:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
+    - name: install bump2version
+      run: |
+        pip install bump2version
+    - name: bump
+      run: |
+        # from refs/tags/v1.2.3 get 1.2.3
+        VERSION=$(echo $GITHUB_REF | sed 's#.*/v##')
+        echo $VERSION
+        # git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        # git config --local user.name "github-actions[bot]"
+        bump2version patch --verbose  --no-tag --new-version $VERSION
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v3
+      with:
+        commit-message: Update version
+        branch: update_release_version
+        base: cicd-test # TODO: change this to master
+        delete-branch: true
+        title: 'Bump version to release'
+        body: |
+          Update mainline version to match release
+          - bumped to release version
+
+        labels: |
+          automated pr
+        draft: false
