@@ -8,7 +8,7 @@ build-wheel: clean-dist build-requirements
 	python -m build
 
 publish: build-wheel
-	twine upload --repository pypi dist/*
+	twine upload dist/*
 
 test-publish: build-wheel
 	twine upload --repository testpypi dist/*
