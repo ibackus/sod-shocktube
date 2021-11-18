@@ -31,7 +31,7 @@ jobs:
       with:
         commit-message: Update version
         branch: update_release_version
-        base: feature/push-release # TODO: change this to master
+        base: master
         delete-branch: true
         title: 'Bump version to release'
         body: |
