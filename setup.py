@@ -3,7 +3,7 @@ import setuptools
 
 setuptools.setup(
     name="sodshock",
-    version="0.1.5",
+    version="0.1.9",
     url="https://github.com/ibackus/sod-shocktube",
     author="Isaac Backus",
     description="A package which numerically solves the sod shock tube problem",
