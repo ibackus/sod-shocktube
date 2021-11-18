@@ -16,6 +16,10 @@ jobs:
           python-version: '3.9'
       - name: Install dependencies
         run: make build-requirements
+      - name: Configure git
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
       - name: bump2version
         run: |
           VERSION=$(echo $GITHUB_REF | sed 's#.*/v##')
@@ -35,6 +39,7 @@ jobs:
         run: |
           make publish
   bump2version:
+    needs: publish
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
