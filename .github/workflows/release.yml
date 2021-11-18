@@ -22,8 +22,6 @@ jobs:
         # from refs/tags/v1.2.3 get 1.2.3
         VERSION=$(echo $GITHUB_REF | sed 's#.*/v##')
         echo $VERSION
-        # git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        # git config --local user.name "github-actions[bot]"
         bump2version patch --verbose  --no-tag --new-version $VERSION
 
     - name: Create Pull Request
@@ -40,24 +38,5 @@ jobs:
 
         labels: |
           automated pr
+        reviewers: ibackus
         draft: false
-
-    # This will only work on branches w/ branch protection
-    - name: Enable Pull Request Automerge
-      if: steps.cpr.outputs.pull-request-operation == 'created'
-      uses: peter-evans/enable-pull-request-automerge@v1
-      with:
-        token: ${{ secrets.PAT }}
-        pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-        merge-method: squash
-#       NOTE TO  FUTURE SELF, from the author's github page:
-#      If the "require pull request reviews" branch protection has been enabled we can
-#  optionally auto-approve the pull request by adding the following step to the example above.
-#  The if condition makes sure we don't approve multiple times if the workflow executes more
-#  than once before the pull request merges.
-#          - name: Auto approve
-#            if: steps.cpr.outputs.pull-request-operation == 'created'
-#            uses: juliangruber/approve-pull-request-action@v1
-#            with:
-#              github-token: ${{ secrets.GITHUB_TOKEN }}
-#              number: ${{ steps.cpr.outputs.pull-request-number }}
