@@ -7,7 +7,13 @@ This repository is a fork of the Riemann solver implemented at [https://gitlab.c
 
 ## Installation
 
-To install to your current python environment:
+### Install from PYPI
+
+```
+pip install sodshock
+```
+
+### Install from source
 * Clone the repository: `git clone https://github.com/ibackus/sod-shocktube.git`
 * cd into the directory: `cd sod-shocktube`
 * and install with pip: ```pip install .``` Or else `python setup.py install`
